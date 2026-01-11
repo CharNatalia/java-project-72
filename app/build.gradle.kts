@@ -29,3 +29,8 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+checkstyle {
+    toolVersion = "10.12.4"
+    configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
+}
