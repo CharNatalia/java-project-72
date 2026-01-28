@@ -9,10 +9,15 @@ plugins {
     id("org.sonarqube") version "7.2.2.6593"
     checkstyle
     jacoco
+    id("io.freefair.lombok") version "8.13.1"
 }
 
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
+
+application {
+    mainClass = "hexlet.code.App"
+}
 
 sonar {
     properties {
