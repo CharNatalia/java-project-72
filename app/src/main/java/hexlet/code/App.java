@@ -61,7 +61,7 @@ public class App {
             ctx.contentType("text/html; charset=utf-8");
         });
 
-        app.get("/", ctx -> ctx.result("Hello World"));
+        app.get("/", ctx -> ctx.render("layout/page.jte"));
         app.start(7070);
         return app;
     }
