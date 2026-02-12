@@ -26,16 +26,16 @@ content = @`
                     </tr>
                     </thead>
                     @if(page != null && !page.getUrls().isEmpty())
-                        <tbody>
-                        <tr>
-                            @for (var url : page.getUrls())
+                        @for (var url : page.getUrls())
+                            <tbody>
+                            <tr>
                                 <td>${url.getId()}</td>
                                 <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
                                 <td></td>
                                 <td></td>
-                            @endfor
-                        </tr>
-                        </tbody>
+                            </tr>
+                            </tbody>
+                        @endfor
                     @endif
                 </table>
             </div>
