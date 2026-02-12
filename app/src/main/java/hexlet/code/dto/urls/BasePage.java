@@ -3,12 +3,13 @@ package hexlet.code.dto.urls;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Map;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BuildUrlPage {
-    private Map<String, String> errors;
+@Setter
+public class BasePage {
+    private String alertType;
+    private String message;
 }

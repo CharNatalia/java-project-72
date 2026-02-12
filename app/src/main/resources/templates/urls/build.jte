@@ -1,12 +1,13 @@
-@import hexlet.code.dto.urls.BuildUrlPage;
-@param BuildUrlPage page = null
+@import hexlet.code.dto.urls.BasePage
+@import hexlet.code.util.NamedRoutes
+@param BasePage page = null
 
 @template.layout.page(
 content = @`
     <main class="flex-grow-1">
-        @if(page != null && page.getErrors() != null)
+        @if(page != null)
             <div class="rounded-0 m-0 alert alert-dismissible fade show alert-danger" role="alert">
-                Неверный URL!
+                ${page.getMessage()}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -17,7 +18,7 @@ content = @`
                         <h1 class="display-3 mb-0">Анализатор страниц</h1>
                         <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
 
-                        <form action="/urls" method="post" class="rss-form text-body">
+                        <form action="${NamedRoutes.urlsPath()}" method="post" class="rss-form text-body">
                             <div class="row">
                                 <div class="col">
                                     <div class="form-floating">

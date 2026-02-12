@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
@@ -61,8 +62,10 @@ public class App {
             ctx.contentType("text/html; charset=utf-8");
         });
 
-        app.post("/urls", UrlController::create);
-        app.get("/", ctx -> ctx.render("urls/build.jte"));
+        app.post(NamedRoutes.urlsPath(), UrlController::create);
+        app.get(NamedRoutes.rootPath(), UrlController::build);
+        app.get(NamedRoutes.urlsPath(), UrlController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
         return app;
     }
 

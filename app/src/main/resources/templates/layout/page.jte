@@ -1,4 +1,5 @@
 @import gg.jte.Content
+@import hexlet.code.util.NamedRoutes;
 @param Content content
 
 <!doctype html>
@@ -13,7 +14,7 @@
 <body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Анализатор страниц</a>
+        <a class="navbar-brand" href="${NamedRoutes.rootPath()}">Анализатор страниц</a>
         <button  class="navbar-toggler"
                  type="button"
                  data-bs-toggle="collapse"
@@ -27,10 +28,10 @@
              id="navbarToggler">
                <ul class="navbar-nav">
                    <li class="nav-item">
-                       <a class="nav-link" href="/">Главная</a>
+                       <a class="nav-link" href="${NamedRoutes.rootPath()}">Главная</a>
                    </li>
                    <li class="nav-item">
-                       <a class="nav-link" href="/">Сайты</a>
+                       <a class="nav-link" href="${NamedRoutes.urlsPath()}">Сайты</a>
                    </li>
                </ul>
         </div>
