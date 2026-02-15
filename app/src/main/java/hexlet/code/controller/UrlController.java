@@ -30,7 +30,7 @@ public class UrlController {
                 ctx.sessionAttribute("flash-info", "Страница уже существует");
             } else {
                 UrlRepository.save(new Url(url.toString()));
-                ctx.sessionAttribute("flash-success", "Страница успешно создана");
+                ctx.sessionAttribute("flash-success", "Страница успешно добавлена");
             }
             ctx.redirect("/urls");
         } catch (Exception e) {

@@ -33,8 +33,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("info.picocli:picocli:4.7.7")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0")
@@ -45,6 +43,12 @@ dependencies {
     implementation("gg.jte:jte:3.1.9")
     implementation("com.h2database:h2:2.3.232")
     implementation("com.zaxxer:HikariCP:6.3.0")
+
+    testImplementation("io.javalin:javalin-testtools:6.6.0")
+    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation(platform("org.junit:junit-bom:5.12.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
