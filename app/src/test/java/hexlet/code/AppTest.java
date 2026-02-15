@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
