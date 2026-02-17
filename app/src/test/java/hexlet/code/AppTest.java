@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ public class AppTest {
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
         app = App.getApp();
+        UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
     }
 
@@ -80,6 +82,29 @@ public class AppTest {
             assertThat(response.code()).isEqualTo(422);
             assertThat(response.body().string())
                     .contains("Некорректный URL");
+        });
+    }
+
+    @Test
+    public void testIncorrectUrl2() {
+        JavalinTest.test(app, (server, client) -> {
+            var url = new Url("https://www.incorrectUrlTest.com");
+            UrlRepository.save(url);
+            var response = client.post("/urls/" + url.getId() + "/checks");
+            assertThat(response.code()).isEqualTo(422);
+            assertThat(response.body().string())
+                    .contains("Некорректный адрес");
+        });
+    }
+
+    @Test
+    public void testUrlCheck() {
+        JavalinTest.test(app, (server, client) -> {
+            var url = new Url("https://www.example.com");
+            UrlRepository.save(url);
+            var response = client.post("/urls/" + url.getId() + "/checks");
+            assertThat(response.body().string())
+                    .contains("200");
         });
     }
 

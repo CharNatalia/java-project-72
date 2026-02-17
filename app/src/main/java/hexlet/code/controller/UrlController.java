@@ -4,9 +4,15 @@ import hexlet.code.dto.urls.BasePage;
 import hexlet.code.dto.urls.BuildUrlsPage;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.net.URI;
 import java.net.URL;
@@ -59,7 +65,40 @@ public class UrlController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Post not found"));
-        var page = new UrlPage(url);
+        var page = new UrlPage(url, UrlCheckRepository.getEntities(id));
         ctx.render("urls/show.jte", model("page", page));
+    }
+
+    public static void urlCheck(Context ctx) throws SQLException {
+        var urlId = ctx.pathParamAsClass("id", Long.class).get();
+        var url = UrlRepository.find(urlId)
+                .orElseThrow(() -> new NotFoundResponse("Post not found"));
+
+        try {
+            var response = Unirest.get(url.getName())
+                    .asString();
+            var status = response.getStatus();
+            var body = response.getBody();
+            Document document = Jsoup.parse(body);
+            var title = document.title();
+            var h1 = parseElement(document.selectFirst("h1"));
+            var description = parseElement(document.selectFirst("meta[name=description]"));
+            var urlCheck = new UrlCheck(urlId, status, h1, title, description);
+            UrlCheckRepository.save(urlCheck);
+            show(ctx);
+        } catch (Exception e) {
+            ctx.status(422);
+            var page = new UrlPage(url, null);
+            page.setAlertType("warning");
+            page.setMessage("Некорректный адрес");
+            ctx.render("urls/show.jte", model("page", page));
+        }
+    }
+
+    private static String parseElement(Element element) {
+        if (element == null) {
+            return null;
+        }
+        return element.text();
     }
 }

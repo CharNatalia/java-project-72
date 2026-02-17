@@ -43,6 +43,9 @@ dependencies {
     implementation("gg.jte:jte:3.1.9")
     implementation("com.h2database:h2:2.3.232")
     implementation("com.zaxxer:HikariCP:6.3.0")
+    implementation("com.konghq:unirest-java:3.14.5")
+    implementation("org.jsoup:jsoup:1.17.2")
+
 
     testImplementation("io.javalin:javalin-testtools:6.6.0")
     testImplementation("org.assertj:assertj-core:3.27.3")

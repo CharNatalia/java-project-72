@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -16,12 +15,4 @@ public class Url {
     public Url(String name) {
         this.name = name;
     }
-
-    public String formatedDate() {
-        DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-        return createdAt.format(formatter);
-    }
-
 }

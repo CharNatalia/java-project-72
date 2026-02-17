@@ -1,4 +1,5 @@
 @import hexlet.code.dto.urls.BuildUrlsPage
+@import hexlet.code.util.Formatter
 @import hexlet.code.util.NamedRoutes
 @param BuildUrlsPage page = null
 
@@ -29,11 +30,17 @@ content = @`
                         @for (var url : page.getUrls())
                             <tbody>
                             <tr>
-                                <td>${url.getId()}</td>
-                                <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                                <td>${url.getUrlId()}</td>
+                                <td><a href="${NamedRoutes.urlPath(url.getUrlId())}">${url.getUrl()}</a></td>
+                                @if(url.getCreatedAt() != null)
+                                    <td>${Formatter.formatedDate(url.getCreatedAt())}</td>
+                                    <td>${url.getStatus()}</td>
+                                @else
+                                    <td></td>
+                                    <td></td>
+                                @endif
+
+                                    </tr>
                             </tbody>
                         @endfor
                     @endif

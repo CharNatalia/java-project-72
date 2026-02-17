@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrlCheckRepository extends BaseRepository{
+public class UrlCheckRepository extends BaseRepository {
     public static void save(UrlCheck check) throws SQLException {
         String sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description) "
                 + "VALUES (?, ?, ?, ?, ?)";
@@ -29,7 +29,7 @@ public class UrlCheckRepository extends BaseRepository{
         }
     }
 
-    public static List<UrlCheck> getEntities(Long urlId) throws SQLException {
+    public static List<UrlCheck> getEntities(long urlId) throws SQLException {
         var sql = "SELECT * FROM url_checks WHERE url_id = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -53,7 +53,7 @@ public class UrlCheckRepository extends BaseRepository{
     }
 
     public static void removeAll() throws SQLException {
-        var sql = "TRUNCATE TABLE url_checks RESTART IDENTITY";
+        var sql = "DELETE FROM url_checks";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();

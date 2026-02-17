@@ -41,6 +41,6 @@ ${content}
 </body>
 
 <footer class="footer border-top py-3 mt-5 bg-light">
-    <div class="text-center">Сделала Наташа</div>
+    <div class="text-center">created by <a class="link" href="https://github.com/CharNatalia">CharNatalia</a></div>
 </footer>
 </html>
