@@ -5,9 +5,9 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
-import mockwebserver3.MockResponse;
-import mockwebserver3.MockWebServer;
 import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,12 +107,9 @@ public class AppTest {
 
     @Test
     public void testUrlCheck() {
-        mockServer.enqueue(
-                new MockResponse.Builder()
-                        .code(200)
-                        .body(readFile("testPage.html"))
-                        .build()
-        );
+        MockResponse mockedResponse = new MockResponse()
+                .setBody(readFile("testPage.html"));
+        mockServer.enqueue(mockedResponse);
         HttpUrl baseUrl = mockServer.url("/test1/url/");
 
         JavalinTest.test(app, (server, client) -> {
@@ -125,8 +122,8 @@ public class AppTest {
     }
 
     @AfterEach
-    public void afterAll() {
-        mockServer.close();
+    public void afterAll() throws IOException {
+        mockServer.shutdown();
     }
 
     String readFile(String fileName) {
