@@ -45,6 +45,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("com.konghq:unirest-java:3.14.5")
     implementation("org.jsoup:jsoup:1.17.2")
+    runtimeOnly("org.postgresql:postgresql:42.7.4")
 
 
     testImplementation("io.javalin:javalin-testtools:6.6.0")
