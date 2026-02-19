@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -26,11 +27,11 @@ public class UrlController {
 
     public static void create(Context ctx) {
         try {
-            var name = ctx.formParamAsClass("url", String.class)
-                    .check(value -> !value.isEmpty(), "Поле не должно быть пустым")
-                    .get();
+            String name = ctx.formParam("url");
+            name = name == null ? "" : name.trim();
             URI uri = new URI(name);
-            String url = uri.getScheme() + "://" + uri.getAuthority();
+            URL fullUrl = uri.toURL();
+            String url = fullUrl.getProtocol() + "://" + fullUrl.getAuthority();
             if (UrlRepository.existsByName(url)) {
                 ctx.sessionAttribute("flash-info", "Страница уже существует");
             } else {
