@@ -31,11 +31,11 @@ public class UrlController {
                     .check(value -> !value.isEmpty(), "Поле не должно быть пустым")
                     .get();
             URI uri = new URI(name);
-            URL url = uri.toURL();
-            if (UrlRepository.existsByName(url.toString())) {
+            String url = uri.getScheme() + "://" + uri.getAuthority();
+            if (UrlRepository.existsByName(url)) {
                 ctx.sessionAttribute("flash-info", "Страница уже существует");
             } else {
-                UrlRepository.save(new Url(url.toString()));
+                UrlRepository.save(new Url(url));
                 ctx.sessionAttribute("flash-success", "Страница успешно добавлена");
             }
             ctx.redirect("/urls");
@@ -82,8 +82,15 @@ public class UrlController {
             Document document = Jsoup.parse(body);
             var title = document.title();
             var h1 = parseElement(document.selectFirst("h1"));
-            var description = parseElement(document.selectFirst("meta[name=description]"));
+            var descEl = document.selectFirst("meta[name=description]");
+            var description = descEl != null ? descEl.attr("content") : null;
             var urlCheck = new UrlCheck(urlId, status, h1, title, description);
+
+            System.out.println("TITLE=" + title);
+            System.out.println("DESC=" + description);
+            System.out.println("OBJ_TITLE=" + urlCheck.getTitle());
+            System.out.println("OBJ_DESC=" + urlCheck.getDescription());
+
             UrlCheckRepository.save(urlCheck);
             show(ctx);
         } catch (Exception e) {

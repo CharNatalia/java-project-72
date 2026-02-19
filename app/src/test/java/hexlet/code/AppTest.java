@@ -4,21 +4,29 @@ import hexlet.code.model.Url;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import io.javalin.Javalin;
+import io.javalin.testtools.JavalinTest;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import okhttp3.HttpUrl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
-
-import io.javalin.testtools.JavalinTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class AppTest {
     private Javalin app;
+    private MockWebServer mockServer;
 
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
+        mockServer = new MockWebServer();
+        mockServer.start();
         app = App.getApp();
         UrlCheckRepository.removeAll();
         UrlRepository.removeAll();
@@ -88,7 +96,7 @@ public class AppTest {
     @Test
     public void testIncorrectUrl2() {
         JavalinTest.test(app, (server, client) -> {
-            var url = new Url("https://www.incorrectUrlTest.com");
+            var url = new Url("https://www.incorrectUrlTest.incorrect");
             UrlRepository.save(url);
             var response = client.post("/urls/" + url.getId() + "/checks");
             assertThat(response.code()).isEqualTo(422);
@@ -99,13 +107,40 @@ public class AppTest {
 
     @Test
     public void testUrlCheck() {
+        mockServer.enqueue(
+                new MockResponse.Builder()
+                        .code(200)
+                        .body(readFile("testPage.html"))
+                        .build()
+        );
+        HttpUrl baseUrl = mockServer.url("/test1/url/");
+
         JavalinTest.test(app, (server, client) -> {
-            var url = new Url("https://www.example.com");
+            var url = new Url(baseUrl.toString());
             UrlRepository.save(url);
             var response = client.post("/urls/" + url.getId() + "/checks");
             assertThat(response.body().string())
-                    .contains("200");
+                    .contains("200", "Test title", "Test h1", "my test description");
         });
     }
 
+    @AfterEach
+    public void afterAll() {
+        mockServer.close();
+    }
+
+    String readFile(String fileName) {
+        try {
+            return Files.readString(
+                    Paths.get(
+                            getClass()
+                                    .getClassLoader()
+                                    .getResource(fileName)
+                                    .toURI()
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
