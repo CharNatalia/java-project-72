@@ -15,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.net.URI;
-import java.net.URL;
 import java.sql.SQLException;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -85,11 +84,6 @@ public class UrlController {
             var descEl = document.selectFirst("meta[name=description]");
             var description = descEl != null ? descEl.attr("content") : null;
             var urlCheck = new UrlCheck(urlId, status, h1, title, description);
-
-            System.out.println("TITLE=" + title);
-            System.out.println("DESC=" + description);
-            System.out.println("OBJ_TITLE=" + urlCheck.getTitle());
-            System.out.println("OBJ_DESC=" + urlCheck.getDescription());
 
             UrlCheckRepository.save(urlCheck);
             show(ctx);
