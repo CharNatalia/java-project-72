@@ -10,11 +10,14 @@ import hexlet.code.repository.UrlRepository;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 
@@ -25,7 +28,7 @@ public class UrlController {
         ctx.render("urls/build.jte");
     }
 
-    public static void create(Context ctx) {
+    public static void create(Context ctx) throws java.sql.SQLException {
         try {
             String name = ctx.formParam("url");
             name = name == null ? "" : name.trim();
@@ -39,7 +42,7 @@ public class UrlController {
                 ctx.sessionAttribute("flash-success", "Страница успешно добавлена");
             }
             ctx.redirect("/urls");
-        } catch (Exception e) {
+        } catch (URISyntaxException | MalformedURLException | IllegalArgumentException e) {
             ctx.status(422);
             ctx.render("urls/build.jte",
                     model("page",
@@ -88,7 +91,7 @@ public class UrlController {
 
             UrlCheckRepository.save(urlCheck);
             show(ctx);
-        } catch (Exception e) {
+        } catch (UnirestException e) {
             ctx.status(422);
             var page = new UrlPage(url, null);
             page.setAlertType("warning");
