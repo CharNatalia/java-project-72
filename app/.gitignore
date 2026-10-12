@@ -1,3 +1,12 @@
+node_modules/
+# css собирается из assets/css/source.css целью build-css
+src/main/resources/static/css/main.css
+
+*.db
+
+# скомпилированные шаблоны jte в режиме разработки
+jte-classes/
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
