@@ -1,52 +1,57 @@
-@import hexlet.code.dto.urls.BuildUrlsPage
+@import hexlet.code.dto.urls.UrlsPage
+@import hexlet.code.repository.UrlCheckRepository
 @import hexlet.code.util.Formatter
 @import hexlet.code.util.NamedRoutes
-@param BuildUrlsPage page = null
+
+@param UrlsPage page
 
 @template.layout.page(
 content = @`
-    <main class="flex-grow-1">
-        @if(page != null && page.getMessage() != null)
-        <div class="rounded-0 m-0 alert alert-${page.getAlertType()}
-         d-flex justify-content-between align-items-center fade show" role="alert">
-            ${page.getMessage()}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+    <div class="mx-auto max-w-7xl px-4 py-10">
+        <h1 class="mb-4 text-4xl font-normal">
+            Сайты
+        </h1>
 
-        <section>
-            <div class="container-lg mt-5">
-                <h1>Сайты</h1>
-                <table class="table table-bordered table-hover mt-3">
+        <section class="mt-12">
+            <div class="overflow-x-auto">
+                <table class="border-collapse text-left" data-test="urls">
                     <thead>
                     <tr>
-                        <th class="col-1">ID</th>
-                        <th>Имя</th>
-                        <th class="col-2">Последняя проверка</th>
-                        <th class="col-1">Код ответа</th>
+                        <th class="w-[10%] border border-gray-300 p-2 align-bottom">ID</th>
+                        <th class="w-[60%] border border-gray-300 p-2 align-bottom">Имя</th>
+                        <th class="w-[20%] border border-gray-300 p-2 align-bottom">Последняя проверка</th>
+                        <th class="w-[10%] border border-gray-300 p-2 align-bottom">Код проверки</th>
                     </tr>
                     </thead>
-                    @if(page != null && !page.getUrls().isEmpty())
-                        @for (var url : page.getUrls())
-                            <tbody>
-                            <tr>
-                                <td>${url.getUrlId()}</td>
-                                <td><a href="${NamedRoutes.urlPath(url.getUrlId())}">${url.getUrl()}</a></td>
-                                @if(url.getCreatedAt() != null)
-                                    <td>${Formatter.formatedDate(url.getCreatedAt())}</td>
-                                    <td>${url.getStatus()}</td>
-                                @else
-                                    <td></td>
-                                    <td></td>
-                                @endif
+                    <tbody>
+                    @for (var check : page.getLastUrlsChecks())
+                        <tr>
+                            <td class="w-[10%] border border-gray-300 p-2">${check.getUrlId()}</td>
+                            <td class="w-[60%] border border-gray-300 p-2">
+                                <a
+                                        href="${NamedRoutes.urlPath(check.getUrlId())}"
+                                        class="text-blue-600 underline hover:text-blue-800">${check.getName()}
+                                </a>
+                            </td>
+                            @if (check.getStatus() != null && check.getCreatedAt() != null)
+                                <td class="w-[20%] border border-gray-300 p-2 whitespace-nowrap">
+                                    ${Formatter.formatedDate(check.getCreatedAt())}
+                                </td>
+                                <td class="w-[10%] border border-gray-300 p-2">
+                                    ${check.getStatus()}
+                                </td>
+                            @else
+                                <td class="w-[20%] border border-gray-300 p-2"></td>
+                                <td class="w-[10%] border border-gray-300 p-2"></td>
+                            @endif
 
-                                    </tr>
-                            </tbody>
-                        @endfor
-                    @endif
+                        </tr>
+                    @endfor
+                    </tbody>
                 </table>
             </div>
         </section>
-    </main>
+    </div>
+
 `
 )
