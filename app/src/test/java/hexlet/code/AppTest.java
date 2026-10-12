@@ -10,7 +10,11 @@ import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,7 +110,8 @@ public class AppTest {
             assertThat(actualUrl).isNotNull();
             assertThat(actualUrl.getName()).isEqualTo(inputName);
 
-            assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo(NamedRoutes.urlPath(actualUrl.getId()));
+            assertThat(responsePost.getHeaders().getFirst("Location"))
+                    .isEqualTo(NamedRoutes.urlPath(actualUrl.getId()));
 
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(actualUrl.getId())).asString();
             String body = response.getBody();
@@ -152,7 +157,8 @@ public class AppTest {
             assertThat(UrlRepository.getEntities()).hasSize(countBefore);
             assertThat(responsePost2.getStatus()).isEqualTo(302);
 
-            assertThat(responsePost2.getHeaders().getFirst("Location")).isEqualTo(NamedRoutes.urlPath(actualUrl.getId()));
+            assertThat(responsePost2.getHeaders().getFirst("Location"))
+                    .isEqualTo(NamedRoutes.urlPath(actualUrl.getId()));
 
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(actualUrl.getId())).asString();
             String body = response.getBody();
@@ -231,5 +237,4 @@ public class AppTest {
 
     }
 }
-
 

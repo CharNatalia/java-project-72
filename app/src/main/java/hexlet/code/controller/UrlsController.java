@@ -50,7 +50,7 @@ public final class UrlsController {
     }
 
     public static void show(Context ctx) throws SQLException {
-        var id = parseId(ctx.pathParam("id"));;
+        var id = parseId(ctx.pathParam("id"));
         Url url = UrlRepository.find(id).orElseThrow(() -> new NotFoundResponse("Post not found"));
         var page = new UrlPage(url, UrlCheckRepository.getEntitiesByUrlId(url.getId()));
         page.setFlash(ctx.consumeSessionAttribute("flash"));

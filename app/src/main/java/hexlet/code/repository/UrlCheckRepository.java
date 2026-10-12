@@ -1,7 +1,6 @@
 package hexlet.code.repository;
 
 import hexlet.code.model.LastUrlsChecks;
-import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 
 import java.sql.SQLException;
@@ -57,11 +56,12 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static List<LastUrlsChecks> getLastChecks() throws SQLException {
-        var sql = "SELECT " +
-                "DISTINCT ON (urls.id) urls.id, urls.name, url_checks.status_code, url_checks.created_at, url_checks.id AS check_id " +
-                "FROM urls LEFT JOIN url_checks " +
-                "ON url_checks.url_id = urls.id " +
-                "ORDER BY urls.id, url_checks.created_at DESC, url_checks.id DESC";
+        var sql = "SELECT "
+                + "DISTINCT ON (urls.id) "
+                + "urls.id, urls.name, url_checks.status_code, url_checks.created_at, url_checks.id AS check_id "
+                + "FROM urls LEFT JOIN url_checks "
+                + "ON url_checks.url_id = urls.id "
+                + "ORDER BY urls.id, url_checks.created_at DESC, url_checks.id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
@@ -84,11 +84,11 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static Optional<UrlCheck> findByUrlId(Long urlId) throws SQLException {
-        var sql = "SELECT *\n" +
-                "FROM url_checks\n" +
-                "WHERE url_id = ?\n" +
-                "ORDER BY created_at DESC, id DESC\n" +
-                "LIMIT 1";
+        var sql = "SELECT *\n"
+                + "FROM url_checks\n"
+                + "WHERE url_id = ?\n"
+                + "ORDER BY created_at DESC, id DESC\n"
+                + "LIMIT 1";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, urlId);
