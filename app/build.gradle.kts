@@ -1,59 +1,37 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.51.0"
-    application
     id("java")
-    id("org.sonarqube") version "7.2.2.6593"
-    checkstyle
-    jacoco
-    id("io.freefair.lombok") version "8.13.1"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    application
+    id("io.freefair.lombok") version "9.7.0"
 }
 
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
-
-application {
-    mainClass = "hexlet.code.App"
-}
-
-sonar {
-    properties {
-        property("sonar.projectKey", "CharNatalia_java-project-72")
-        property("sonar.organization", "charnatalia")
-        property("sonar.host.url", "https://sonarcloud.io")
-    }
-}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("info.picocli:picocli:4.7.7")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0")
-    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.16.2")
-    implementation("io.javalin:javalin:6.1.3")
+    implementation("io.javalin:javalin:7.2.3")
     implementation("org.slf4j:slf4j-simple:2.0.7")
-    implementation("io.javalin:javalin-rendering:6.1.3")
-    implementation("gg.jte:jte:3.1.9")
-    implementation("com.h2database:h2:2.3.232")
-    implementation("com.zaxxer:HikariCP:6.3.0")
+    implementation("io.javalin:javalin-rendering-jte:7.2.3")
+    implementation("gg.jte:jte:3.2.4")
     implementation("com.konghq:unirest-java:3.14.5")
-    implementation("org.jsoup:jsoup:1.17.2")
-    runtimeOnly("org.postgresql:postgresql:42.7.4")
+    implementation("org.jsoup:jsoup:1.18.3")
 
+    implementation("com.h2database:h2:2.2.220")
+    runtimeOnly("org.postgresql:postgresql:42.7.8")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
-    testImplementation("io.javalin:javalin-testtools:6.6.0")
-    testImplementation("org.assertj:assertj-core:3.27.3")
-    testImplementation(platform("org.junit:junit-bom:5.12.2"))
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("io.javalin:javalin-testtools:7.2.3")
+    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:5.5.0")
 }
 
 tasks.test {
@@ -67,19 +45,6 @@ tasks.test {
     }
 }
 
-checkstyle {
-    toolVersion = "10.12.4"
-    configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(true)
-    }
-}
-
-sonarqube {
-    properties {
-        property("sonar.coverage.jacoco.xmlReportPaths", "./build/reports/jacoco/test/jacocoTestReport.xml")
-    }
+application {
+    mainClass = "hexlet.code.App"
 }
