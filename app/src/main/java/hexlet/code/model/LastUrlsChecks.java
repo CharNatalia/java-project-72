@@ -1,4 +1,4 @@
-package hexlet.code.dto.urls;
+package hexlet.code.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class LastUrlsChecks {
     private Long urlId;
-    private String url;
+    private String name;
     private LocalDateTime createdAt;
-    private int status;
+    private Integer status;
 }
