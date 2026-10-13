@@ -67,9 +67,9 @@ content = @`
                             <tr>
                                 <td class="border border-gray-300 p-2">${check.getId()}</td>
                                 <td class="border border-gray-300 p-2">${check.getStatusCode()}</td>
-                                <td class="border border-gray-300 p-2">${check.getH1()}</td>
-                                <td class="border border-gray-300 p-2">${check.getTitle()}</td>
-                                <td class="border border-gray-300 p-2">${check.getDescription()}</td>
+                                <td class="border border-gray-300 p-2">${Formatter.truncate(check.getH1())}</td>
+                                <td class="border border-gray-300 p-2">${Formatter.truncate(check.getTitle())}</td>
+                                <td class="border border-gray-300 p-2">${Formatter.truncate(check.getDescription())}</td>
                                 <td class="whitespace-nowrap border border-gray-300 p-2">
                                     ${Formatter.formatedDate(check.getCreatedAt())}
                                 </td>

@@ -10,4 +10,13 @@ public class Formatter {
 
         return time.format(formatter);
     }
+
+    public static String truncate(String text) {
+        if (text == null) {
+            return "";
+        }
+        return text.length() > 200
+                ? text.substring(0, 200) + "..."
+                : text;
+    }
 }
