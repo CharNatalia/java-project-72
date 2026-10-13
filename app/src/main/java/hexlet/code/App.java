@@ -61,7 +61,6 @@ public class App {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(readResourceFile("schema.sql"));
-            //statement.execute(readResourceFile("seed.sql"));
         }
         BaseRepository.dataSource = dataSource;
 

@@ -70,7 +70,7 @@ public class AppTest {
 
         @Test
         void testIndex() {
-            HttpResponse<String> response = Unirest.get(baseUrl).asString();
+            HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.rootPath()).asString();
             assertThat(response.getStatus()).isEqualTo(200);
             assertThat(response.getBody()).contains("Бесплатно проверяйте сайты на SEO пригодность");
         }
