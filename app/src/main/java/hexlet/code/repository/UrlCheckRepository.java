@@ -60,7 +60,7 @@ public class UrlCheckRepository extends BaseRepository {
                 + "urls.id, urls.name, url_checks.status_code, url_checks.created_at, url_checks.id AS check_id "
                 + "FROM urls LEFT JOIN url_checks "
                 + "ON url_checks.url_id = urls.id "
-                + "ORDER BY urls.id, url_checks.created_at DESC, url_checks.id DESC";
+                + "ORDER BY urls.id DESC, url_checks.created_at DESC, url_checks.id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
