@@ -6,6 +6,7 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.http.HttpStatus;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import mockwebserver3.MockResponse;
@@ -71,7 +72,7 @@ public class AppTest {
         @Test
         void testIndex() {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.rootPath()).asString();
-            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(response.getBody()).contains("Бесплатно проверяйте сайты на SEO пригодность");
         }
     }
@@ -83,14 +84,14 @@ public class AppTest {
         @Test
         void testIndex() {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlsPath()).asString();
-            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(response.getBody()).contains("https://ru.hexlet.io", "https://github.com");
         }
 
         @Test
         void testShow() {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(1L)).asString();
-            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(response.getBody()).contains("https://ru.hexlet.io");
         }
 
@@ -102,7 +103,7 @@ public class AppTest {
                             .field("url", inputName)
                             .asEmpty();
 
-            assertThat(responsePost.getStatus()).isEqualTo(302);
+            assertThat(responsePost.getStatus()).isEqualTo(HttpStatus.FOUND.getCode());
 
 
             Url actualUrl = UrlRepository.findByName(inputName).orElse(null);
@@ -116,7 +117,7 @@ public class AppTest {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(actualUrl.getId())).asString();
             String body = response.getBody();
 
-            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(body).contains(inputName);
             assertThat(body).contains("Страница успешно добавлена");
         }
@@ -129,7 +130,7 @@ public class AppTest {
                             .field("url", inputName)
                             .asString();
 
-            assertThat(responsePost.getStatus()).isEqualTo(422);
+            assertThat(responsePost.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT.getCode());
             assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
 
             String body = responsePost.getBody();
@@ -155,7 +156,7 @@ public class AppTest {
                             .asEmpty();
 
             assertThat(UrlRepository.getEntities()).hasSize(countBefore);
-            assertThat(responsePost2.getStatus()).isEqualTo(302);
+            assertThat(responsePost2.getStatus()).isEqualTo(HttpStatus.FOUND.getCode());
 
             assertThat(responsePost2.getHeaders().getFirst("Location"))
                     .isEqualTo(NamedRoutes.urlPath(actualUrl.getId()));
@@ -163,7 +164,7 @@ public class AppTest {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(actualUrl.getId())).asString();
             String body = response.getBody();
 
-            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(body).contains(inputName);
             assertThat(body).contains("Страница уже существует");
         }
@@ -172,14 +173,14 @@ public class AppTest {
         void testShowNotFound() {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath(999L)).asString();
 
-            assertThat(response.getStatus()).isEqualTo(404);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.getCode());
         }
 
         @Test
         void testShowInvalidId() {
             HttpResponse<String> response = Unirest.get(baseUrl + NamedRoutes.urlPath("sss")).asString();
 
-            assertThat(response.getStatus()).isEqualTo(404);
+            assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.getCode());
         }
 
 
@@ -205,7 +206,7 @@ public class AppTest {
                         Unirest.get(baseUrl + NamedRoutes.urlPath(url.getId()))
                                 .asString();
 
-                assertThat(response.getStatus()).isEqualTo(200);
+                assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
                 assertThat(response.getBody())
                         .contains("200", "Test title", "Test h1", "my test description");
             }
@@ -215,7 +216,7 @@ public class AppTest {
         void testInvalidCheck() throws IOException, SQLException {
             try (MockWebServer mockServer = new MockWebServer()) {
                 mockServer.enqueue(new MockResponse.Builder()
-                        .code(404)
+                        .code(HttpStatus.NOT_FOUND.getCode())
                         .build());
                 mockServer.start();
                 var url = new Url(mockServer.url("/").toString());
@@ -226,7 +227,7 @@ public class AppTest {
                         Unirest.post(baseUrl + NamedRoutes.urlCheckPath(url.getId()))
                                 .asString();
 
-                assertThat(failedResponse.getStatus()).isEqualTo(422);
+                assertThat(failedResponse.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT.getCode());
                 assertThat(failedResponse.getBody())
                         .contains("Произошла ошибка при проверке");
 
