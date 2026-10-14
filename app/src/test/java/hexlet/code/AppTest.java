@@ -206,7 +206,17 @@ public class AppTest {
                         Unirest.get(baseUrl + NamedRoutes.urlPath(url.getId()))
                                 .asString();
 
-                assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.getCode());
+                var checks = UrlCheckRepository.getEntitiesByUrlId(url.getId());
+
+                assertThat(checks).hasSize(1);
+
+                var check = checks.getFirst();
+
+                assertThat(check.getStatusCode()).isEqualTo(HttpStatus.OK.getCode());
+                assertThat(check.getTitle()).isEqualTo("Test title");
+                assertThat(check.getH1()).isEqualTo("Test h1");
+                assertThat(check.getDescription()).isEqualTo("my test description");
+
                 assertThat(response.getBody())
                         .contains("200", "Test title", "Test h1", "my test description");
             }
