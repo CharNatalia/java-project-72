@@ -14,8 +14,7 @@ import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,9 +25,8 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class App {
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
-
     private static final Path TEMPLATES_PATH = Path.of("src", "main", "resources", "templates");
     private static final Path STATIC_PATH = Path.of("src", "main", "resources", "static");
     private static final Path JTE_CLASSES_PATH = Path.of("jte-classes");
@@ -71,7 +69,7 @@ public class App {
         BaseRepository.dataSource = dataSource;
 
         // Молча выбранный режим неотличим от «правка разметки не подхватилась».
-        LOG.info(
+        log.info(
                 "Mode: {}",
                 isDevelopment()
                         ? "development, templates and static are read from src"
