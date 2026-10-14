@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Formatter {
+    private static final int MAX_PREVIEW_LENGTH = 200;
+
     public static String formatedDate(LocalDateTime time) {
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -15,8 +17,8 @@ public class Formatter {
         if (text == null) {
             return "";
         }
-        return text.length() > 200
-                ? text.substring(0, 200) + "..."
+        return text.length() > MAX_PREVIEW_LENGTH
+                ? text.substring(0, MAX_PREVIEW_LENGTH) + "..."
                 : text;
     }
 }

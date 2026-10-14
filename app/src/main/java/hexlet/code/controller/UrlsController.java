@@ -9,6 +9,7 @@ import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import io.javalin.http.HttpStatus;
 
 import java.net.URI;
 import java.net.URL;
@@ -39,7 +40,7 @@ public final class UrlsController {
             var id = url.getId();
             ctx.redirect(NamedRoutes.urlPath(id));
         } catch (java.net.URISyntaxException | java.net.MalformedURLException | IllegalArgumentException e) {
-            ctx.status(422);
+            ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             BasePage page = new BasePage();

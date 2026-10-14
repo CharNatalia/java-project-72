@@ -7,6 +7,7 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -30,7 +31,7 @@ public class UrlChecksController {
                     Unirest.get(url.getName())
                             .asString();
             var status = response.getStatus();
-            if (status >= 400) {
+            if (status >= HttpStatus.BAD_REQUEST.getCode()) {
                 throw new ValidationException("Произошла ошибка при проверке");
             }
             var body = response.getBody();
@@ -49,7 +50,7 @@ public class UrlChecksController {
 
             ctx.redirect(NamedRoutes.urlPath(urlId));
         } catch (UnirestException | ValidationException e) {
-            ctx.status(422);
+            ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
             ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
             ctx.sessionAttribute("flash-type", "danger");
             var page = new UrlPage(url, UrlCheckRepository.getEntitiesByUrlId(url.getId()));
