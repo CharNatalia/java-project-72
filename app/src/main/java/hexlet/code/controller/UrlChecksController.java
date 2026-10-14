@@ -26,29 +26,13 @@ public class UrlChecksController {
         var urlId = parseId(ctx.pathParam("id"));
         Url url = UrlRepository.find(urlId)
                 .orElseThrow(() -> new NotFoundResponse("Post not found"));
+        HttpResponse<String> response;
         try {
-            HttpResponse<String> response =
-                    Unirest.get(url.getName())
+            response = Unirest.get(url.getName())
                             .asString();
-            var status = response.getStatus();
-            if (status >= HttpStatus.BAD_REQUEST.getCode()) {
+            if (response.getStatus() >= HttpStatus.BAD_REQUEST.getCode()) {
                 throw new ValidationException("Произошла ошибка при проверке");
             }
-            var body = response.getBody();
-
-            Document document = Jsoup.parse(body);
-            var title = document.title();
-            var h1 = parseElement(document.selectFirst("h1"));
-            var descEl = document.selectFirst("meta[name=description]");
-            var description = descEl != null ? descEl.attr("content") : null;
-            var urlCheck = new UrlCheck(urlId, status, h1, title, description);
-
-            UrlCheckRepository.save(urlCheck);
-
-            ctx.sessionAttribute("flash", "Страница успешно проверена");
-            ctx.sessionAttribute("flash-type", "success");
-
-            ctx.redirect(NamedRoutes.urlPath(urlId));
         } catch (UnirestException | ValidationException e) {
             ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
             ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
@@ -57,7 +41,25 @@ public class UrlChecksController {
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
             ctx.render("urls/show.jte", Map.of("page", page));
+            return;
         }
+
+        var body = response.getBody();
+
+        Document document = Jsoup.parse(body);
+        var status = response.getStatus();
+        var title = document.title();
+        var h1 = parseElement(document.selectFirst("h1"));
+        var descEl = document.selectFirst("meta[name=description]");
+        var description = descEl != null ? descEl.attr("content") : null;
+        var urlCheck = new UrlCheck(urlId, status, h1, title, description);
+
+        UrlCheckRepository.save(urlCheck);
+
+        ctx.sessionAttribute("flash", "Страница успешно проверена");
+        ctx.sessionAttribute("flash-type", "success");
+
+        ctx.redirect(NamedRoutes.urlPath(urlId));
     }
 
     private static String parseElement(Element element) {

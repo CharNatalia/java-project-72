@@ -18,27 +18,12 @@ import java.util.Map;
 
 public final class UrlsController {
     public static void create(Context ctx) throws SQLException {
+        String name = ctx.formParam("url");
+        name = name == null ? "" : name.trim();
+        URL fullUrl;
         try {
-            String name = ctx.formParam("url");
-            name = name == null ? "" : name.trim();
             URI uri = new URI(name);
-            URL fullUrl = uri.toURL();
-            String correctUrl = fullUrl.getProtocol() + "://" + fullUrl.getHost();
-            if (fullUrl.getPort() != -1) {
-                correctUrl += ":" + fullUrl.getPort();
-            }
-            Url url = new Url(correctUrl);
-            if (UrlRepository.existsByName(correctUrl)) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flash-type", "danger");
-                url = UrlRepository.findByName(correctUrl).get();
-            } else {
-                UrlRepository.save(url);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("flash-type", "success");
-            }
-            var id = url.getId();
-            ctx.redirect(NamedRoutes.urlPath(id));
+            fullUrl = uri.toURL();
         } catch (java.net.URISyntaxException | java.net.MalformedURLException | IllegalArgumentException e) {
             ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
             ctx.sessionAttribute("flash", "Некорректный URL");
@@ -47,7 +32,25 @@ public final class UrlsController {
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
             ctx.render("index.jte", Map.of("page", page));
+            return;
         }
+
+        String correctUrl = fullUrl.getProtocol() + "://" + fullUrl.getHost();
+        if (fullUrl.getPort() != -1) {
+            correctUrl += ":" + fullUrl.getPort();
+        }
+        Url url = new Url(correctUrl);
+        if (UrlRepository.existsByName(correctUrl)) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flash-type", "danger");
+            url = UrlRepository.findByName(correctUrl).get();
+        } else {
+            UrlRepository.save(url);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flash-type", "success");
+        }
+
+        ctx.redirect(NamedRoutes.urlPath(url.getId()));
     }
 
     public static void show(Context ctx) throws SQLException {
