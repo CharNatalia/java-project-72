@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    java
     application
     id("io.freefair.lombok") version "9.7.0"
     id("org.sonarqube") version "7.2.2.6593"
