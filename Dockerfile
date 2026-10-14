@@ -16,6 +16,6 @@ COPY /app .
 
 COPY --from=styles /app/src/main/resources/static /app/src/main/resources/static
 
-RUN ["./gradlew", "clean", "build"]
+RUN ["./gradlew", "--no-daemon", "clean", "build", "installDist"]
 
-CMD ["./gradlew", "run"]
+CMD ["/app/build/install/app/bin/app"]
