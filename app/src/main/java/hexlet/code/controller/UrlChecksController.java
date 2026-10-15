@@ -26,13 +26,22 @@ public class UrlChecksController {
         var urlId = parseId(ctx.pathParam("id"));
         Url url = UrlRepository.find(urlId)
                 .orElseThrow(() -> new NotFoundResponse("Post not found"));
-        HttpResponse<String> response;
+        UrlCheck urlCheck;
         try {
-            response = Unirest.get(url.getName())
+            HttpResponse<String> response = Unirest.get(url.getName())
                             .asString();
             if (response.getStatus() >= HttpStatus.BAD_REQUEST.getCode()) {
                 throw new ValidationException("Произошла ошибка при проверке");
             }
+            var body = response.getBody();
+
+            Document document = Jsoup.parse(body);
+            var status = response.getStatus();
+            var title = document.title();
+            var h1 = parseElement(document.selectFirst("h1"));
+            var descEl = document.selectFirst("meta[name=description]");
+            var description = descEl != null ? descEl.attr("content") : null;
+            urlCheck = new UrlCheck(urlId, status, h1, title, description);
         } catch (UnirestException | ValidationException e) {
             ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
             var page = new UrlPage(url, UrlCheckRepository.getEntitiesByUrlId(url.getId()));
@@ -41,17 +50,6 @@ public class UrlChecksController {
             ctx.render("urls/show.jte", Map.of("page", page));
             return;
         }
-
-        var body = response.getBody();
-
-        Document document = Jsoup.parse(body);
-        var status = response.getStatus();
-        var title = document.title();
-        var h1 = parseElement(document.selectFirst("h1"));
-        var descEl = document.selectFirst("meta[name=description]");
-        var description = descEl != null ? descEl.attr("content") : null;
-        var urlCheck = new UrlCheck(urlId, status, h1, title, description);
-
         UrlCheckRepository.save(urlCheck);
 
         ctx.sessionAttribute("flash", "Страница успешно проверена");
