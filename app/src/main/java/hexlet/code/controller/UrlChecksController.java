@@ -35,11 +35,9 @@ public class UrlChecksController {
             }
         } catch (UnirestException | ValidationException e) {
             ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
-            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
-            ctx.sessionAttribute("flash-type", "danger");
             var page = new UrlPage(url, UrlCheckRepository.getEntitiesByUrlId(url.getId()));
-            page.setFlash(ctx.consumeSessionAttribute("flash"));
-            page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+            page.setFlash("Произошла ошибка при проверке");
+            page.setFlashType("danger");
             ctx.render("urls/show.jte", Map.of("page", page));
             return;
         }

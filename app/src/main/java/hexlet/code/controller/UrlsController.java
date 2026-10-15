@@ -26,11 +26,9 @@ public final class UrlsController {
             fullUrl = uri.toURL();
         } catch (java.net.URISyntaxException | java.net.MalformedURLException | IllegalArgumentException e) {
             ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
-            ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.sessionAttribute("flash-type", "danger");
             BasePage page = new BasePage();
-            page.setFlash(ctx.consumeSessionAttribute("flash"));
-            page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+            page.setFlash("Некорректный URL");
+            page.setFlashType("danger");
             ctx.render("index.jte", Map.of("page", page));
             return;
         }
