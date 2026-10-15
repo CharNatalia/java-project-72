@@ -1,6 +1,6 @@
 package hexlet.code.repository;
 
-import hexlet.code.model.LastUrlsChecks;
+import hexlet.code.dto.UrlWithLastCheck;
 import hexlet.code.model.UrlCheck;
 
 import java.sql.SQLException;
@@ -54,7 +54,7 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<LastUrlsChecks> getLastChecks() throws SQLException {
+    public static List<UrlWithLastCheck> getLastChecks() throws SQLException {
         var sql = "SELECT "
                 + "DISTINCT ON (urls.id) "
                 + "urls.id, urls.name, url_checks.status_code, url_checks.created_at, url_checks.id AS check_id "
@@ -64,7 +64,7 @@ public class UrlCheckRepository extends BaseRepository {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
-            var result = new ArrayList<LastUrlsChecks>();
+            var result = new ArrayList<UrlWithLastCheck>();
             while (resultSet.next()) {
                 var id = resultSet.getLong("id");
                 var name = resultSet.getString("name");
@@ -75,7 +75,7 @@ public class UrlCheckRepository extends BaseRepository {
                     createdAt = time.toLocalDateTime();
                 }
                 var status = resultSet.getInt("status_code");
-                var url = new LastUrlsChecks(id, name, createdAt, status);
+                var url = new UrlWithLastCheck(id, name, createdAt, status);
                 result.add(url);
             }
             return result;

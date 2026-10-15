@@ -1,4 +1,4 @@
-package hexlet.code.model;
+package hexlet.code.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class LastUrlsChecks {
+public class UrlWithLastCheck {
     private Long urlId;
     private String name;
     private LocalDateTime createdAt;

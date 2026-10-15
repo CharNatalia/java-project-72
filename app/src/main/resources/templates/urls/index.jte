@@ -24,7 +24,7 @@ content = @`
                     </tr>
                     </thead>
                     <tbody>
-                    @for (var check : page.getLastUrlsChecks())
+                    @for (var check : page.getUrlWithLastUrlsChecks())
                         <tr>
                             <td class="w-[10%] border border-gray-300 p-2">${check.getUrlId()}</td>
                             <td class="w-[60%] border border-gray-300 p-2">
